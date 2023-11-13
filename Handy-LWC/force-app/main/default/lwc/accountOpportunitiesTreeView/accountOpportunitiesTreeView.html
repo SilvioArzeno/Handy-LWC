@@ -1,0 +1,12 @@
+<template>
+    <div class="tree-card">
+        <lightning-tree-grid columns={gridColumns}  hide-checkbox-column="true" data={opportunities} key-field="Name"></lightning-tree-grid>
+        <template if:true={childAccounts}>
+            <template for:each={childAccounts} for:item="acc">
+                <c-account-opportunities-tree-view key={acc.Id} record-id={acc.Id}></c-account-opportunities-tree-view>
+            </template>
+        </template>
+     
+        
+    </div>
+</template>

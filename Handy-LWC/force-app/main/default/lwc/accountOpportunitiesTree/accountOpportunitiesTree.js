@@ -3,15 +3,34 @@ import getOpportunities from '@salesforce/apex/AccountOpportunitiesTreeControlle
 
 const COLUMNS = [
     {
-        label: 'Account Name', fieldName: 'NameUrl', type: 'url', typeAttributes: {
+        label: 'Name', fieldName: 'NameUrl', type: 'url', typeAttributes: {
             label: { fieldName: 'Name' },
+        }, cellAttributes: {
+            iconName: {fieldName: 'iconName'},
+            iconLabel: {fieldName: 'iconLabel'}
         },
+        initialWidth: 300,
 
-    }, 
+    },
     {
-        type: 'phone',
-        fieldName: 'phone',
-        label: 'Phone Number',
+        type: 'text',
+        fieldName: 'StageName',
+        label: 'Stage',
+    },
+    {
+        type: 'currency',
+        fieldName: 'ExpectedRevenue',
+        label: 'Expected Revenue',
+    },
+    {
+        type: 'date',
+        fieldName: 'CloseDate',
+        label: 'Close Date',
+    },
+    {
+        type: 'text',
+        fieldName: 'OwnerName',
+        label: 'Owner Name',
     }
     // Add more columns as needed
 ];
@@ -26,16 +45,28 @@ export default class accountOpportunitiesTree extends LightningElement {
     wiredOpportunities({ error, data }) {
         if (data) {
             // Process data if needed
-            this.opportunities = data?.map((item)=>{
+            let itemCount  = 0
+            this.opportunities = data?.map((item) => {
+               itemCount++
+
                 return {
                     Id: item.Id,
+                    //To apply indentation to child accounts
                     Name: item.Name,
-                    NameUrl: '/'+item.Id,
-                    _children: item?.Opportunities?.map((opp)=> {
-                        return{
-                            Id:opp.Id,
+                    iconName:'standard:account',
+                    iconLabel: itemCount == 1 ? '':  '      ',
+                    NameUrl: '/' + item.Id,
+                    _children: item?.Opportunities?.map((opp) => {
+                        return {
+                            Id: opp.Id,
                             Name: opp.Name,
-                            NameUrl: '/'+opp.Id
+                            NameUrl: '/' + opp.Id,
+                            StageName: opp.StageName,
+                            ExpectedRevenue: opp.ExpectedRevenue,
+                            CloseDate: opp.CloseDate,
+                            OwnerName: opp.Owner.Name,
+                            iconName:'standard:opportunity',
+
                         }
                     })
                 }
